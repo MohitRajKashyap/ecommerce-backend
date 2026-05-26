@@ -1,0 +1,40 @@
+# ============================================================
+# E-Commerce Backend - Test Configuration (H2 In-Memory)
+# ============================================================
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MySQL
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+    show-sql: false
+
+  data:
+    redis:
+      host: localhost
+      port: 6370   # Non-existent port; tests mock Redis
+
+  cache:
+    type: simple   # Use simple in-memory cache for tests
+
+  mail:
+    host: localhost
+    port: 25
+
+jwt:
+  secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+  access-token-expiration: 900000
+  refresh-token-expiration: 604800000
+
+logging:
+  level:
+    com.ecommerce: WARN
+    org.springframework.security: WARN

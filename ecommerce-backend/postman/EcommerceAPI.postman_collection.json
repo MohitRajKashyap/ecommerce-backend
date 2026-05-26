@@ -1,0 +1,360 @@
+{
+  "info": {
+    "name": "E-Commerce Backend API",
+    "description": "Complete Postman collection for E-Commerce Backend. Import and set {{baseUrl}} = http://localhost:8080/api",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl",      "value": "http://localhost:8080/api" },
+    { "key": "accessToken",  "value": "" },
+    { "key": "refreshToken", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "🔐 Authentication",
+      "item": [
+        {
+          "name": "Register Customer",
+          "event": [{ "listen": "test", "script": { "exec": [
+            "if(pm.response.code === 201) {",
+            "  const r = pm.response.json();",
+            "  pm.collectionVariables.set('accessToken',  r.data.accessToken);",
+            "  pm.collectionVariables.set('refreshToken', r.data.refreshToken);",
+            "}"
+          ]}}],
+          "request": {
+            "method": "POST", "url": "{{baseUrl}}/auth/register",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"Password@123\",\n  \"phone\": \"9876543210\",\n  \"role\": \"CUSTOMER\"\n}" }
+          }
+        },
+        {
+          "name": "Register Seller",
+          "request": {
+            "method": "POST", "url": "{{baseUrl}}/auth/register",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"firstName\": \"Jane\",\n  \"lastName\": \"Smith\",\n  \"email\": \"seller@example.com\",\n  \"password\": \"Password@123\",\n  \"phone\": \"9123456789\",\n  \"role\": \"SELLER\"\n}" }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [{ "listen": "test", "script": { "exec": [
+            "if(pm.response.code === 200) {",
+            "  const r = pm.response.json();",
+            "  pm.collectionVariables.set('accessToken',  r.data.accessToken);",
+            "  pm.collectionVariables.set('refreshToken', r.data.refreshToken);",
+            "}"
+          ]}}],
+          "request": {
+            "method": "POST", "url": "{{baseUrl}}/auth/login",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"Password@123\"\n}" }
+          }
+        },
+        {
+          "name": "Login as Admin",
+          "request": {
+            "method": "POST", "url": "{{baseUrl}}/auth/login",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"admin@ecommerce.com\",\n  \"password\": \"Admin@123\"\n}" }
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST", "url": "{{baseUrl}}/auth/refresh-token",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}" }
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST", "url": "{{baseUrl}}/auth/forgot-password",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"john.doe@example.com\"\n}" }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST", "url": "{{baseUrl}}/auth/logout",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "👤 User & Addresses",
+      "item": [
+        {
+          "name": "Get My Profile",
+          "request": {
+            "method": "GET", "url": "{{baseUrl}}/users/me",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{accessToken}}" }] }
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT", "url": "{{baseUrl}}/users/me",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{accessToken}}" }] },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"firstName\": \"Johnny\",\n  \"lastName\": \"Doe\",\n  \"phone\": \"9876543210\"\n}" }
+          }
+        },
+        {
+          "name": "Add Address",
+          "request": {
+            "method": "POST", "url": "{{baseUrl}}/users/me/addresses",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{accessToken}}" }] },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"fullName\": \"John Doe\",\n  \"phone\": \"9876543210\",\n  \"addressLine1\": \"123 Main Street, Sector 5\",\n  \"city\": \"Mumbai\",\n  \"state\": \"Maharashtra\",\n  \"country\": \"India\",\n  \"pincode\": \"400001\",\n  \"defaultAddress\": true,\n  \"addressType\": \"HOME\"\n}" }
+          }
+        },
+        {
+          "name": "Get My Addresses",
+          "request": {
+            "method": "GET", "url": "{{baseUrl}}/users/me/addresses",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{accessToken}}" }] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📦 Products",
+      "item": [
+        {
+          "name": "Get All Products",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/products?page=0&size=10&sortBy=createdAt&sortDir=desc", "host": ["{{baseUrl}}"], "path": ["products"], "query": [{"key":"page","value":"0"},{"key":"size","value":"10"},{"key":"sortBy","value":"createdAt"},{"key":"sortDir","value":"desc"}] } }
+        },
+        {
+          "name": "Search Products",
+          "request": { "method": "GET", "url": "{{baseUrl}}/products/search?query=iphone&page=0&size=10" }
+        },
+        {
+          "name": "Filter Products",
+          "request": { "method": "GET", "url": "{{baseUrl}}/products/filter?minPrice=100&maxPrice=5000&minRating=4&inStock=true&sortBy=price&sortDir=asc" }
+        },
+        {
+          "name": "Get Trending Products",
+          "request": { "method": "GET", "url": "{{baseUrl}}/products/trending?limit=10" }
+        },
+        {
+          "name": "Get Product by ID",
+          "request": { "method": "GET", "url": "{{baseUrl}}/products/1" }
+        },
+        {
+          "name": "Create Product (Seller)",
+          "request": {
+            "method": "POST", "url": "{{baseUrl}}/products",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{accessToken}}" }] },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"iPhone 15 Pro Max\",\n  \"sku\": \"APPL-IPH15-PROMAX-256\",\n  \"description\": \"Apple iPhone 15 Pro Max 256GB Natural Titanium\",\n  \"price\": 134900.00,\n  \"discountPrice\": 129999.00,\n  \"stockQuantity\": 50,\n  \"categoryId\": 1,\n  \"brand\": \"Apple\",\n  \"weight\": 0.221,\n  \"weightUnit\": \"kg\",\n  \"featured\": true,\n  \"imageUrls\": [\n    \"https://example.com/images/iphone15-front.jpg\",\n    \"https://example.com/images/iphone15-back.jpg\"\n  ]\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🗂️ Categories",
+      "item": [
+        {
+          "name": "Get All Categories",
+          "request": { "method": "GET", "url": "{{baseUrl}}/categories" }
+        },
+        {
+          "name": "Get Category Tree",
+          "request": { "method": "GET", "url": "{{baseUrl}}/categories/tree" }
+        },
+        {
+          "name": "Create Category (Admin)",
+          "request": {
+            "method": "POST", "url": "{{baseUrl}}/categories",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{accessToken}}" }] },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Tablets\",\n  \"description\": \"iPads and Android tablets\",\n  \"parentId\": 1,\n  \"active\": true\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🛒 Cart",
+      "item": [
+        {
+          "name": "Get Cart",
+          "request": {
+            "method": "GET", "url": "{{baseUrl}}/cart",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{accessToken}}" }] }
+          }
+        },
+        {
+          "name": "Add to Cart",
+          "request": {
+            "method": "POST", "url": "{{baseUrl}}/cart/items",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{accessToken}}" }] },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"productId\": 1,\n  \"quantity\": 2\n}" }
+          }
+        },
+        {
+          "name": "Update Cart Item",
+          "request": {
+            "method": "PATCH", "url": "{{baseUrl}}/cart/items/1?quantity=3",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{accessToken}}" }] }
+          }
+        },
+        {
+          "name": "Remove from Cart",
+          "request": {
+            "method": "DELETE", "url": "{{baseUrl}}/cart/items/1",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{accessToken}}" }] }
+          }
+        },
+        {
+          "name": "Clear Cart",
+          "request": {
+            "method": "DELETE", "url": "{{baseUrl}}/cart",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{accessToken}}" }] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📋 Orders",
+      "item": [
+        {
+          "name": "Place Order",
+          "request": {
+            "method": "POST", "url": "{{baseUrl}}/orders",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{accessToken}}" }] },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"addressId\": 1,\n  \"paymentMethod\": \"UPI\",\n  \"notes\": \"Please handle with care\"\n}" }
+          }
+        },
+        {
+          "name": "Get My Orders",
+          "request": {
+            "method": "GET", "url": "{{baseUrl}}/orders/my?page=0&size=10",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{accessToken}}" }] }
+          }
+        },
+        {
+          "name": "Track Order",
+          "request": {
+            "method": "GET", "url": "{{baseUrl}}/orders/track/ORD-20241215-000001",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{accessToken}}" }] }
+          }
+        },
+        {
+          "name": "Cancel Order",
+          "request": {
+            "method": "POST", "url": "{{baseUrl}}/orders/1/cancel?reason=Changed mind",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{accessToken}}" }] }
+          }
+        },
+        {
+          "name": "Get All Orders (Admin)",
+          "request": {
+            "method": "GET", "url": "{{baseUrl}}/orders?page=0&size=20",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{accessToken}}" }] }
+          }
+        },
+        {
+          "name": "Update Order Status (Admin)",
+          "request": {
+            "method": "PATCH", "url": "{{baseUrl}}/orders/1/status?status=CONFIRMED",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{accessToken}}" }] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "💳 Payments",
+      "item": [
+        {
+          "name": "Process Payment (Simulate Success)",
+          "request": {
+            "method": "POST", "url": "{{baseUrl}}/payments/process",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{accessToken}}" }] },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"orderId\": 1,\n  \"paymentMethod\": \"UPI\",\n  \"simulateSuccess\": true\n}" }
+          }
+        },
+        {
+          "name": "Get Payment by Order",
+          "request": {
+            "method": "GET", "url": "{{baseUrl}}/payments/order/1",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{accessToken}}" }] }
+          }
+        },
+        {
+          "name": "Initiate Refund (Admin)",
+          "request": {
+            "method": "POST", "url": "{{baseUrl}}/payments/order/1/refund",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{accessToken}}" }] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "⭐ Reviews",
+      "item": [
+        {
+          "name": "Get Product Reviews",
+          "request": { "method": "GET", "url": "{{baseUrl}}/reviews/product/1?page=0&size=10" }
+        },
+        {
+          "name": "Submit Review",
+          "request": {
+            "method": "POST", "url": "{{baseUrl}}/reviews/product/1",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{accessToken}}" }] },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"rating\": 5,\n  \"title\": \"Absolutely amazing product!\",\n  \"comment\": \"Best purchase I've made this year. Build quality is outstanding and performance is top-notch.\"\n}" }
+          }
+        },
+        {
+          "name": "Get My Reviews",
+          "request": {
+            "method": "GET", "url": "{{baseUrl}}/reviews/my",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{accessToken}}" }] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🛠️ Admin",
+      "item": [
+        {
+          "name": "Get Dashboard",
+          "request": {
+            "method": "GET", "url": "{{baseUrl}}/admin/dashboard",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{accessToken}}" }] }
+          }
+        },
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET", "url": "{{baseUrl}}/admin/users?page=0&size=20",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{accessToken}}" }] }
+          }
+        },
+        {
+          "name": "Low Stock Report",
+          "request": {
+            "method": "GET", "url": "{{baseUrl}}/admin/reports/low-stock?threshold=10&limit=50",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{accessToken}}" }] }
+          }
+        },
+        {
+          "name": "Deactivate User",
+          "request": {
+            "method": "PATCH", "url": "{{baseUrl}}/admin/users/2/deactivate",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{accessToken}}" }] }
+          }
+        }
+      ]
+    }
+  ]
+}
